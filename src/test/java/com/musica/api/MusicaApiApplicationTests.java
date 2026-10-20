@@ -1,5 +1,6 @@
 package com.musica.api;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
@@ -12,6 +13,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+
+import com.jayway.jsonpath.JsonPath;
 
 /**
  * Pruebas de integración de los endpoints usando MockMvc.
@@ -88,5 +92,43 @@ class MusicaApiApplicationTests {
                         .content(json))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error").isNotEmpty());
+    }
+
+    @Test
+    void deleteCancionInexistenteDevuelve404() throws Exception {
+        mockMvc.perform(delete("/api/canciones/9999"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void deleteCancionCreadaDevuelve204YLuegoDesaparece() throws Exception {
+        String json = """
+                {
+                    "titulo": "Canción Temporal",
+                    "artista": "Estudiante",
+                    "genero": "Pop",
+                    "anio": 2026,
+                    "duracionSegundos": 150
+                }
+                """;
+
+        // Crear una canción y tomar el id que el servidor le asignó.
+        MvcResult resultado = mockMvc.perform(post("/api/canciones")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isCreated())
+                .andReturn();
+
+        String idCreado = JsonPath
+                .read(resultado.getResponse().getContentAsString(), "$.id")
+                .toString();
+
+        // Eliminarla: debe responder 204 sin cuerpo.
+        mockMvc.perform(delete("/api/canciones/" + idCreado))
+                .andExpect(status().isNoContent());
+
+        // Consultarla de nuevo: ya no debe existir.
+        mockMvc.perform(get("/api/canciones/" + idCreado))
+                .andExpect(status().isNotFound());
     }
 }

@@ -1,0 +1,26 @@
+meta {
+  name: 4. Crear (POST)
+  type: http
+  seq: 4
+}
+
+post {
+  url: http://localhost:8080/api/canciones
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "titulo": "Mi Cancion",
+    "artista": "Yo",
+    "genero": "Pop",
+    "anio": 2026,
+    "duracionSegundos": 200
+  }
+}
+
+script:post-response {
+  // Guarda el id que asignó el servidor para que la petición 5 lo elimine.
+  bru.setVar("nuevoId", res.getBody().id);
+}

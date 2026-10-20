@@ -1,0 +1,11 @@
+meta {
+  name: 5. Eliminar (DELETE)
+  type: http
+  seq: 5
+}
+
+delete {
+  url: http://localhost:8080/api/canciones/{{nuevoId}}
+  body: none
+  auth: none
+}

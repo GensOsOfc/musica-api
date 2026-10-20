@@ -64,6 +64,7 @@ mvn test
 | GET    | `/api/canciones/{id}`      | Canción por id (PathVariable)                  | 200 OK / 404 NOT FOUND |
 | GET    | `/api/canciones/buscar?genero=rock` | Canciones filtradas por género (RequestParam) | 200 OK / 400 BAD REQUEST |
 | POST   | `/api/canciones`           | Crea una canción (JSON en el cuerpo, RequestBody + DTO) | 201 CREATED / 400 BAD REQUEST |
+| DELETE | `/api/canciones/{id}`      | Elimina una canción por id (PathVariable) | 204 NO CONTENT / 404 NOT FOUND |
 
 ## Ejemplos de uso
 
@@ -83,6 +84,9 @@ curl "http://localhost:8080/api/canciones/buscar?genero=Rock%20en%20español"
 curl -X POST http://localhost:8080/api/canciones \
   -H "Content-Type: application/json" \
   -d '{"titulo":"Mi Canción","artista":"Yo","genero":"Pop","anio":2026,"duracionSegundos":200}'
+
+# Eliminar una canción
+curl -X DELETE http://localhost:8080/api/canciones/9
 ```
 
 Con PowerShell (`Invoke-RestMethod`):
@@ -95,7 +99,17 @@ Invoke-RestMethod "http://localhost:8080/api/canciones/buscar?genero=Salsa"
 $body = '{"titulo":"Mi Canción","artista":"Yo","genero":"Pop","anio":2026,"duracionSegundos":200}'
 Invoke-RestMethod -Method Post -Uri http://localhost:8080/api/canciones `
   -ContentType "application/json" -Body $body
+
+Invoke-RestMethod -Method Delete -Uri http://localhost:8080/api/canciones/9
 ```
+
+## Probar con Bruno
+
+El repositorio incluye una colección lista para [Bruno](https://www.usebruno.com/) en la carpeta `bruno/`.
+
+1. Abrir Bruno → **Open Collection** → seleccionar la carpeta `bruno/` del proyecto.
+2. Con la aplicación corriendo (`mvn spring-boot:run`), ejecutar cada petición con el botón ▶.
+3. Ejecutar en orden: la petición 4 (POST) crea la canción y guarda su id en la variable `nuevoId`; la petición 5 (DELETE) elimina esa canción usando esa variable. Si se ejecuta el DELETE dos veces seguidas, la segunda responde 404 porque la canción ya no existe.
 
 ## Decisiones de diseño
 

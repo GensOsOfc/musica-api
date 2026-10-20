@@ -67,6 +67,16 @@ public class CatalogoMusical {
     }
 
     /**
+     * Elimina una canción por su id.
+     *
+     * @return {@code true} si la canción existía y fue eliminada,
+     *         {@code false} si no había ninguna canción con ese id.
+     */
+    public boolean eliminar(int id) {
+        return canciones.removeIf(c -> c.getId() == id);
+    }
+
+    /**
      * Valida un DTO antes de crear la canción.
      *
      * @return un mensaje de error si el DTO no es válido, o {@code null}
