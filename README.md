@@ -47,7 +47,9 @@ Requisitos: JDK 17 o superior y Maven instalados.
 mvn spring-boot:run
 ```
 
-La aplicación queda escuchando en `http://localhost:8080`.
+La aplicación queda escuchando en `http://localhost:8080`. Abrir esa
+dirección en el navegador devuelve el índice con la lista de endpoints;
+los datos están bajo `/api/canciones`.
 
 Para ejecutar las pruebas:
 
@@ -59,6 +61,7 @@ mvn test
 
 | Método | URL                        | Descripción                                    | Respuestas |
 |--------|----------------------------|------------------------------------------------|------------|
+| GET    | `/`                        | Índice con la lista de endpoints               | 200 OK     |
 | GET    | `/api/canciones`           | Lista todas las canciones                      | 200 OK     |
 | GET    | `/api/canciones/generos`   | Géneros disponibles sin repetir                | 200 OK     |
 | GET    | `/api/canciones/{id}`      | Canción por id (PathVariable)                  | 200 OK / 404 NOT FOUND |

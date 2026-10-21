@@ -29,6 +29,14 @@ class MusicaApiApplicationTests {
     private MockMvc mockMvc;
 
     @Test
+    void getIndiceDevuelve200YListaDeEndpoints() throws Exception {
+        mockMvc.perform(get("/"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.endpoints").isArray())
+                .andExpect(jsonPath("$.endpoints[0].ruta").value("/api/canciones"));
+    }
+
+    @Test
     void getListarCancionesDevuelve200YArregloConDatos() throws Exception {
         mockMvc.perform(get("/api/canciones"))
                 .andExpect(status().isOk())
@@ -74,10 +82,10 @@ class MusicaApiApplicationTests {
                 .andExpect(jsonPath("$.titulo").value("Canción de Prueba"))
                 .andReturn();
 
-        // El id lo asigna el servidor y depende de cuantas canciones se hayan
-        // creado antes, asi que Location se compara con el id devuelto y no
-        // con un numero fijo: las pruebas comparten la misma instancia del
-        // servicio y JUnit no garantiza el orden de los metodos.
+        // El id lo asigna el servidor y depende de cuántas canciones se hayan
+        // creado antes, así que Location se compara con el id devuelto y no
+        // con un número fijo: las pruebas comparten la misma instancia del
+        // servicio y JUnit no garantiza el orden de los métodos.
         String idCreado = JsonPath
                 .read(resultado.getResponse().getContentAsString(), "$.id")
                 .toString();
