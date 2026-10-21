@@ -1,9 +1,9 @@
 package com.musica.api;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -67,12 +67,23 @@ class MusicaApiApplicationTests {
                 }
                 """;
 
-        mockMvc.perform(post("/api/canciones")
+        MvcResult resultado = mockMvc.perform(post("/api/canciones")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isCreated())
-                .andExpect(header().string("Location", "/api/canciones/9"))
-                .andExpect(jsonPath("$.titulo").value("Canción de Prueba"));
+                .andExpect(jsonPath("$.titulo").value("Canción de Prueba"))
+                .andReturn();
+
+        // El id lo asigna el servidor y depende de cuantas canciones se hayan
+        // creado antes, asi que Location se compara con el id devuelto y no
+        // con un numero fijo: las pruebas comparten la misma instancia del
+        // servicio y JUnit no garantiza el orden de los metodos.
+        String idCreado = JsonPath
+                .read(resultado.getResponse().getContentAsString(), "$.id")
+                .toString();
+
+        assertEquals("/api/canciones/" + idCreado,
+                resultado.getResponse().getHeader("Location"));
     }
 
     @Test

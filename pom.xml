@@ -42,6 +42,16 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <!--
+                        La JVM, por defecto, reserva como heap maximo 1/4 de la RAM
+                        del equipo (unos 4 GB aqui). En una maquina con poca memoria
+                        libre esa reserva falla y el proceso muere al arrancar con
+                        "insufficient memory for the Java Runtime Environment".
+                        Esta API cabe de sobra en 512 MB.
+                    -->
+                    <jvmArguments>-Xms64m -Xmx512m -XX:ReservedCodeCacheSize=96m</jvmArguments>
+                </configuration>
             </plugin>
         </plugins>
     </build>

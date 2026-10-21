@@ -3,3 +3,7 @@ target/
 *.iml
 .vscode/
 .DS_Store
+
+# Volcados que deja la JVM cuando el proceso muere (p. ej. por falta de memoria)
+hs_err_pid*.log
+replay_pid*.log

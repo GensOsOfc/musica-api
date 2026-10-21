@@ -1,9 +1,9 @@
 package com.musica.api.servicio;
 
 import java.time.Year;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.stereotype.Service;
@@ -14,7 +14,9 @@ import com.musica.api.modelo.Cancion;
 /**
  * Lógica de negocio del catálogo musical.
  *
- * Los datos se guardan en memoria (List). Para esta actividad es
+ * Los datos se guardan en memoria con CopyOnWriteArrayList, porque
+ * Tomcat atiende cada peticion en un hilo distinto y todos comparten
+ * esta misma instancia del servicio. Para esta actividad es
  * suficiente: el objetivo es demostrar el flujo HTTP/JSON, no la
  * persistencia. Cambiar a una base de datos implicaría solo
  * reemplazar esta clase por un repositorio de Spring Data.
@@ -22,7 +24,7 @@ import com.musica.api.modelo.Cancion;
 @Service
 public class CatalogoMusical {
 
-    private final List<Cancion> canciones = new ArrayList<>();
+    private final List<Cancion> canciones = new CopyOnWriteArrayList<>();
     private final AtomicInteger contadorIds = new AtomicInteger();
 
     public CatalogoMusical() {
